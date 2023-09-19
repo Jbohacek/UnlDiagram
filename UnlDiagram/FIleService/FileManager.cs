@@ -15,7 +15,7 @@ namespace UnlDiagram.FIleService
             string savePath = AppDomain.CurrentDomain.BaseDirectory;
             savePath = Path.GetFullPath(Path.Combine(savePath, @"..\..\..\"));
             savePath = Path.Combine(savePath, "TestFiles");
-            savePath += $@"\Test_{DateTime.Now.ToShortDateString()}_{new Random().Next(0,10000)}.xml";
+            savePath += $@"\Test_{new Random().Next(0, 10000)}_{DateTime.Now.ToShortDateString()}.xml";
 
             TextWriter writer = null;
             try
