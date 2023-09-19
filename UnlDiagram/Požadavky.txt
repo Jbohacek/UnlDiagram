@@ -1,0 +1,12 @@
+- Private
+# protected
++ Public
+
+
+Pøidávat pøedáváním
+
+Edit
+
+
+Pøesouvání
+Zvìtšování
