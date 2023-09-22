@@ -10,19 +10,26 @@ namespace UnlDiagram.FIleService
 {
     public class FileManager
     {
-        public static Result<bool> WriteToXmlFile<T>(T objectToWrite) where T : new()
+        public static Result<bool> WriteToXmlFile<T>(T objectToWrite, string path = "") where T : new()
         {
-            string savePath = AppDomain.CurrentDomain.BaseDirectory;
-            savePath = Path.GetFullPath(Path.Combine(savePath, @"..\..\..\"));
-            savePath = Path.Combine(savePath, "TestFiles");
-            savePath += $@"\Test_{new Random().Next(0, 10000)}_{DateTime.Now.ToShortDateString()}.xml";
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                path = Path.GetFullPath(Path.Combine(path, @"..\..\..\"));
+                path = Path.Combine(path, "TestFiles");
+                path += $@"\Test_{new Random().Next(0, 10000)}_{DateTime.Now.ToShortDateString()}.xml";
+            }
+            
 
-            TextWriter writer = null;
+
+
+            TextWriter? writer = null;
+            var serializer = new XmlSerializer(typeof(T));
+            writer = new StreamWriter(path, false);
+            serializer.Serialize(writer, objectToWrite);
+
             try
             {
-                var serializer = new XmlSerializer(typeof(T));
-                writer = new StreamWriter(savePath, false);
-                serializer.Serialize(writer, objectToWrite);
+                
             }
             catch (Exception x)
             {
@@ -35,6 +42,32 @@ namespace UnlDiagram.FIleService
             }
             return new Result<bool>(true);
 
+        }
+
+        public static T ReadFromXmlFile<T>(string path) where T : new()
+        {
+            TextReader? reader = null;
+            try
+            {
+                var serializer = new XmlSerializer(typeof(T));
+                reader = new StreamReader(path);
+                var ret = serializer.Deserialize(reader);
+                if (ret != null)
+                {
+                    return (T)ret;
+                }
+                else
+                {
+                    return new T();
+                }
+
+
+            }
+            finally
+            {
+                if (reader != null)
+                    reader.Close();
+            }
         }
     }
 }
