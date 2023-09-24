@@ -25,6 +25,9 @@ namespace UnlDiagram.Models
         public PointF Location { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public int LastWidth { get; set; }
+        public int LastHeight { get; set; }
+        public PointF LastLocation { get; set; }
 
         public PointF LeftTop => Location;
         public PointF RightTop => new(Width + Location.X, Location.Y);
@@ -35,6 +38,8 @@ namespace UnlDiagram.Models
 
         public Color Color { get; set; } = Color.White;
         public Font Font { get; set; } = new Font("Menlo", 16f, FontStyle.Regular);
+        public ElementsStates PossibleState { get; set; } = ElementsStates.None;
+
 
         public Element()
         {
@@ -85,28 +90,39 @@ namespace UnlDiagram.Models
             return true;
         }
 
-        // Zmenšit kod
+        
         public Cursor GetCloseCursor(int x, int y, int distance = 15)
         {
-            if (GetDistance(LeftTop, new PointF(x, y)) < distance)
+            var corners = new Dictionary<PointF, Cursor>
             {
-                return Cursors.SizeNWSE;
+                { LeftTop, Cursors.SizeNWSE },
+                { LeftBottom, Cursors.SizeNESW },
+                { RightBottom, Cursors.SizeNWSE },
+                { RightTop, Cursors.SizeNESW }
+            };
+            foreach (var corner in 
+                     corners.Where(corner => GetDistance(corner.Key, new PointF(x, y)) < distance))
+            {
+                return corner.Value;
             }
-            if (GetDistance(LeftBottom, new PointF(x, y)) < distance)
+            return Cursors.Arrow;
+        }
+        public ElementsStates GetCloseState(int x, int y, int distance = 15)
+        {
+            var corners = new Dictionary<PointF, ElementsStates>
             {
-                return Cursors.SizeNESW;
-            }
-            if (GetDistance(RightBottom, new PointF(x, y)) < distance)
+                { LeftTop, ElementsStates.ResizeLT },
+                { LeftBottom, ElementsStates.ResizeLB },
+                { RightBottom, ElementsStates.ResizeRB },
+                { RightTop, ElementsStates.ResizeRT }
+            };
+            foreach (var corner in
+                     corners.Where(corner => GetDistance(corner.Key, new PointF(x, y)) < distance))
             {
-                return Cursors.SizeNWSE;
-            }
-            if (GetDistance(RightTop, new PointF(x, y)) < distance)
-            {
-                return Cursors.SizeNESW;
+                return corner.Value;
             }
 
-            return Cursors.Arrow;
-            
+            return ElementsStates.Moving;
         }
 
         public static double GetDistance(PointF point1, PointF point2)
@@ -160,4 +176,6 @@ namespace UnlDiagram.Models
             }
         }
     }
+
+
 }

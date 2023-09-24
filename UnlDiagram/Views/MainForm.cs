@@ -1,6 +1,9 @@
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using UnlDiagram.Models;
 using UnlDiagram.Models.Elements;
+using UnlDiagram.Models.Enums;
+using Timer = System.Threading.Timer;
 
 namespace UnlDiagram
 {
@@ -35,11 +38,17 @@ namespace UnlDiagram
 
         private void MainView_MouseDown(object sender, MouseEventArgs e)
         {
-            var selected = _classElements.Where(x => x.IsIn(new PointF(e.X, e.Y)) == true);
+            var selected = _classElements.Where(x => x.IsIn(new PointF(e.X, e.Y),10) == true);
             var selectedItem = selected?.MaxBy(x => x.DisplayOrder);
             if (selectedItem != null)
             {
+                selectedItem.PossibleState = selectedItem.GetCloseState(e.X, e.Y);
+                Debug.WriteLine(selectedItem.PossibleState);
+
                 _sElement = selectedItem;
+                _sElement.LastHeight = selectedItem.Height;
+                _sElement.LastWidth = selectedItem.Width;
+                _sElement.LastLocation = new PointF(_sElement.Location.X, _sElement.Location.Y);
                 _xoffSet = e.X - _sElement.Location.X;
                 _yoffSet = e.Y - _sElement.Location.Y;
             }
@@ -59,37 +68,85 @@ namespace UnlDiagram
             }
         }
 
-        // Cursor se musí dávat jako poslední jinak bliká
+
+
+        
         private void MainView_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_classElements.Any(x => x.IsIn(new PointF(e.X, e.Y)) == true))
+            //Stopwatch a = new Stopwatch();
+            //a.Start();
+            Cursor setCursor;
+            bool found = false;
+            var state = ElementsStates.None;
+
+            foreach (var classElement in _classElements)
             {
-                Cursor.Current = Cursors.NoMove2D;
+                if (classElement.IsIn(new PointF(e.X, e.Y), 10))
+                {
+                    classElement.DisplayDots = true;
+                    setCursor = classElement.GetCloseCursor(e.X, e.Y);
+                    if (setCursor == Cursors.Arrow && classElement.IsIn(new PointF(e.X, e.Y)))
+                    {
+                        setCursor = Cursors.SizeAll;
+                    }
 
-
+                    if (MainView.Cursor != setCursor && setCursor != Cursors.Arrow)
+                    {
+                        MainView.Cursor = setCursor;
+                        MainView.Refresh();
+                    }
+                    found = true;
+                    break;
+                }
+                else
+                {
+                    classElement.DisplayDots = false;
+                }
             }
-            else if (Cursor.Current != Cursors.Arrow)
-            {
-                Cursor.Current = Cursors.Arrow;
-            }
 
-            foreach (var classElement in _classElements.Where(x => x.IsIn(new PointF(e.X, e.Y), 15)))
+            if (MainView.Cursor != Cursors.Arrow && found == false)
             {
-                classElement.DisplayDots = true;
-                Cursor.Current = classElement.GetCloseCursor(e.X, e.Y);
+                setCursor = Cursors.Arrow;
+                MainView.Cursor = setCursor;
                 MainView.Refresh();
             }
 
-            foreach (var classElement in _classElements.Where(x => x.IsIn(new PointF(e.X, e.Y), 15) == false))
-            {
-                classElement.DisplayDots = false;
-                MainView.Refresh();
-            }
 
-            if (_sElement != null)
+            if (_sElement == null) return;
+
+            //state = _sElement.GetCloseState(e.X, e.Y);
+            if (_sElement.PossibleState == ElementsStates.Moving)
             {
                 _sElement.Location = new PointF(e.X - _xoffSet, e.Y - _yoffSet);
             }
+            if (_sElement.PossibleState == ElementsStates.ResizeRT)
+            {
+                _sElement.Width = e.X - (int)_sElement.Location.X;
+                _sElement.Location = new PointF(_sElement.Location.X, e.Y);
+                _sElement.Height = (int)(_sElement.LastHeight + (_sElement.LastLocation.Y - _sElement.Location.Y));
+            }
+            if (_sElement.PossibleState == ElementsStates.ResizeLT)
+            {
+                _sElement.Location = new PointF(e.X, e.Y);
+                _sElement.Width = (int)(_sElement.LastWidth + (_sElement.LastLocation.X - _sElement.Location.X));
+                _sElement.Height = (int)(_sElement.LastHeight + (_sElement.LastLocation.Y - _sElement.Location.Y));
+            }
+
+            if (_sElement.PossibleState == ElementsStates.ResizeRB)
+            {
+                _sElement.Width = e.X - (int)_sElement.Location.X;
+                _sElement.Height = e.Y - (int)_sElement.Location.Y;
+            }
+            if (_sElement.PossibleState == ElementsStates.ResizeLB)
+            {
+                _sElement.Location = new PointF(e.X, _sElement.Location.Y);
+                _sElement.Width = (int)(_sElement.LastWidth + (_sElement.LastLocation.X - _sElement.Location.X));
+                _sElement.Height = e.Y - (int)_sElement.Location.Y;
+            }
+
+
+            //a.Stop();
+            //Debug.WriteLine(a.ElapsedTicks);
         }
     }
 }
