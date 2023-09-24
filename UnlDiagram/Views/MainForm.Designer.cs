@@ -32,12 +32,17 @@
             MainView = new PictureBox();
             AddButton = new Button();
             MoveTimer = new System.Windows.Forms.Timer(components);
+            MenuStrip = new ContextMenuStrip(components);
+            přidatToolStripMenuItem = new ToolStripMenuItem();
+            editovatToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)MainView).BeginInit();
+            MenuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // MainView
             // 
             MainView.BackColor = SystemColors.ActiveBorder;
+            MainView.ContextMenuStrip = MenuStrip;
             MainView.Location = new Point(195, 12);
             MainView.Name = "MainView";
             MainView.Size = new Size(1280, 711);
@@ -64,6 +69,24 @@
             MoveTimer.Interval = 1;
             MoveTimer.Tick += MoveTimer_Tick;
             // 
+            // MenuStrip
+            // 
+            MenuStrip.Items.AddRange(new ToolStripItem[] { přidatToolStripMenuItem, editovatToolStripMenuItem });
+            MenuStrip.Name = "MenuStrip";
+            MenuStrip.Size = new Size(118, 48);
+            // 
+            // přidatToolStripMenuItem
+            // 
+            přidatToolStripMenuItem.Name = "přidatToolStripMenuItem";
+            přidatToolStripMenuItem.Size = new Size(117, 22);
+            přidatToolStripMenuItem.Text = "Přidat";
+            // 
+            // editovatToolStripMenuItem
+            // 
+            editovatToolStripMenuItem.Name = "editovatToolStripMenuItem";
+            editovatToolStripMenuItem.Size = new Size(117, 22);
+            editovatToolStripMenuItem.Text = "Editovat";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -74,6 +97,7 @@
             Name = "MainForm";
             Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)MainView).EndInit();
+            MenuStrip.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -82,5 +106,8 @@
         private PictureBox MainView;
         private Button AddButton;
         private System.Windows.Forms.Timer MoveTimer;
+        private ContextMenuStrip MenuStrip;
+        private ToolStripMenuItem přidatToolStripMenuItem;
+        private ToolStripMenuItem editovatToolStripMenuItem;
     }
 }
