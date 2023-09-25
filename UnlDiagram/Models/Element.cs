@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Xml.Serialization;
 using UnlDiagram.Models.Enums;
 
 namespace UnlDiagram.Models
@@ -14,7 +15,7 @@ namespace UnlDiagram.Models
         public Guid Id { get; set; }
 
         public bool IsDeleted { get; set; } = false;
-        public bool CanBeDeleted { get; set; } = true;
+        public bool Visible { get; set; } = true;
         public bool CanMove { get; set; } = true;
         public bool DisplayDots { get; set; } = false;
 
@@ -27,16 +28,22 @@ namespace UnlDiagram.Models
         public int Height { get; set; }
         public int LastWidth { get; set; }
         public int LastHeight { get; set; }
+        public int MinWidth { get; set; }
+        public int MinHeight { get; set; }
         public PointF LastLocation { get; set; }
 
-        public PointF LeftTop => Location;
-        public PointF RightTop => new(Width + Location.X, Location.Y);
-        public PointF LeftBottom => new(Location.X, Location.Y + Height);
-        public PointF RightBottom => new(Location.X + Width, Location.Y + Height);
+        //přidat X a Y
+
+        [XmlIgnore] public PointF LeftTop => Location;
+        [XmlIgnore] public PointF RightTop => new(Width + Location.X, Location.Y);
+        [XmlIgnore] public PointF LeftBottom => new(Location.X, Location.Y + Height);
+        [XmlIgnore] public PointF RightBottom => new(Location.X + Width, Location.Y + Height);
 
         public RectangleF Rec => new(Location.X, Location.Y, Width, Height);
 
+        [XmlIgnore]
         public Color Color { get; set; } = Color.White;
+        [XmlIgnore]
         public Font Font { get; set; } = new Font("Menlo", 16f, FontStyle.Regular);
         public ElementsStates PossibleState { get; set; } = ElementsStates.None;
 
@@ -52,6 +59,8 @@ namespace UnlDiagram.Models
             Location = location;
             Width = width;
             Height = height;
+            MinHeight = height;
+            MinWidth = width;
             if (displayOrder == 0)
             {
                 DisplayOrder = _displayCount;
@@ -67,32 +76,19 @@ namespace UnlDiagram.Models
 
         public bool IsIn(PointF cursorLocation, int offset = 0)
         {
-            
-            if (LeftTop.X - offset >= cursorLocation.X)
-            {
-                return false;
-            }
-
-            if (RightTop.X + offset <= cursorLocation.X)
-            {
-                return false;
-            }
-
-            if (LeftTop.Y - offset >= cursorLocation.Y)
-            {
-                return false;
-            }
-
-            if (LeftBottom.Y + offset <= cursorLocation.Y)
-            {
-                return false;
-            }
-            return true;
+            return LeftTop.X - offset < cursorLocation.X &&
+                   RightTop.X + offset > cursorLocation.X &&
+                   LeftTop.Y - offset < cursorLocation.Y &&
+                   LeftBottom.Y + offset > cursorLocation.Y;
         }
 
         
         public Cursor GetCloseCursor(int x, int y, int distance = 15)
         {
+            if (!ArePointsUnique(LeftTop, LeftBottom, RightBottom, RightTop))
+            {
+                return Cursors.SizeAll;
+            }
             var corners = new Dictionary<PointF, Cursor>
             {
                 { LeftTop, Cursors.SizeNWSE },
@@ -109,6 +105,7 @@ namespace UnlDiagram.Models
         }
         public ElementsStates GetCloseState(int x, int y, int distance = 15)
         {
+            
             var corners = new Dictionary<PointF, ElementsStates>
             {
                 { LeftTop, ElementsStates.ResizeLT },
@@ -125,7 +122,7 @@ namespace UnlDiagram.Models
             return ElementsStates.Moving;
         }
 
-        public static double GetDistance(PointF point1, PointF point2)
+        public static double GetDistance(PointF point1, PointF point2) // Help class
         {
             double xDiff = point2.X - point1.X;
             double yDiff = point2.Y - point1.Y;
@@ -137,9 +134,10 @@ namespace UnlDiagram.Models
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine($"Id: {Id}");
             stringBuilder.AppendLine($"IsDeleted: {IsDeleted}");
-            stringBuilder.AppendLine($"CanBeDeleted: {CanBeDeleted}");
+            stringBuilder.AppendLine($"Visible: {Visible}");
             stringBuilder.AppendLine($"CanMove: {CanMove}");
             stringBuilder.AppendLine($"DisplayDots: {DisplayDots}");
+            stringBuilder.AppendLine($"DisplayOrder: {DisplayOrder}");
             stringBuilder.AppendLine($"Location: {Location}");
             stringBuilder.AppendLine($"Width: {Width}");
             stringBuilder.AppendLine($"Height: {Height}");
@@ -150,30 +148,35 @@ namespace UnlDiagram.Models
             return stringBuilder.ToString();
         }
 
-        public void WriteSelf()
-        {
-            Debug.WriteLine(this.ToString());
-        }
 
-        public static void FillVariableTypes(ref ComboBox combo)
+        public static void FillVariableTypes(ref ComboBox combo) // help class
         {
             combo.Items.Clear();
             foreach (string name in Enum.GetNames(typeof(VariablesTypes)))
             {
                 if (name != "Custom")
                 {
-                    combo.Items.Add(name);
+                    combo.Items.Add(name.Substring(1));
                 }
             }
         }
 
-        public static void FillAccessTypes(ref ComboBox combo)
+        public static void FillAccessTypes(ref ComboBox combo) // help class
         {
             combo.Items.Clear();
             foreach (string name in Enum.GetNames(typeof(AccessModifiers)))
             {
-                combo.Items.Add(name);
+                combo.Items.Add(name.Substring(1));
             }
+        }
+        
+        private bool ArePointsUnique(PointF p1, PointF p2, PointF p3, PointF p4) // help class
+        {
+            if (p1 == p2 || p1 == p3 || p1 == p4 || p2 == p3 || p2 == p4 || p3 == p4)
+            {
+                return false;
+            }
+            return true;
         }
     }
 

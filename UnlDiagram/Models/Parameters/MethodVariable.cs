@@ -10,7 +10,7 @@ namespace UnlDiagram.Models.Parameters
     public class MethodVariable : Variable
     {
 
-        public List<Variable> Parameters = new List<Variable>();
+        public List<ClassVariable> Parameters = new List<ClassVariable>();
 
         public override string ToString()
         {
@@ -18,7 +18,7 @@ namespace UnlDiagram.Models.Parameters
 
             ret += base.GetAccessChar();
 
-            if (Custom != null)
+            if (Type == VariablesTypes.Custom)
             {
                 ret += $" {Name} ({string.Join(", ",Parameters)}) : {Custom}";
             }

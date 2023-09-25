@@ -9,6 +9,7 @@ namespace UnlDiagram.Models.Parameters
 {
     public class Variable
     {
+        public bool IsDeleted { get; set; } = false;
         public string Name { get; set; }
         public VariablesTypes Type { get; set; }
         public string? Custom { get; set; }
@@ -48,7 +49,7 @@ namespace UnlDiagram.Models.Parameters
 
         protected Variable()
         {
-            Name = "?";
+            Name = "New";
             Type = VariablesTypes.Custom;
             Custom = null;
             Access = AccessModifiers._public;

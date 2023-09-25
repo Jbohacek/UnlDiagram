@@ -18,18 +18,13 @@ namespace UnlDiagram.FIleService
                 path = Path.Combine(path, "TestFiles");
                 path += $@"\Test_{new Random().Next(0, 10000)}_{DateTime.Now.ToShortDateString()}.xml";
             }
-            
-
-
-
-            TextWriter? writer = null;
-            var serializer = new XmlSerializer(typeof(T));
-            writer = new StreamWriter(path, false);
-            serializer.Serialize(writer, objectToWrite);
+                TextWriter? writer = null;
 
             try
             {
-                
+                var serializer = new XmlSerializer(typeof(T));
+                writer = new StreamWriter(path, false);
+                serializer.Serialize(writer, objectToWrite);
             }
             catch (Exception x)
             {

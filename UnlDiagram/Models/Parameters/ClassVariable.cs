@@ -8,9 +8,10 @@ namespace UnlDiagram.Models.Parameters
         {
             var ret = "";
 
-            ret += base.GetAccessChar();
+            if(!Simple)
+                ret += base.GetAccessChar(); // opravit
 
-            if (Custom != null)
+            if (Type == VariablesTypes.Custom)
             {
                 ret += $" {Name} : {Custom}";
             }
@@ -18,9 +19,13 @@ namespace UnlDiagram.Models.Parameters
             {
                 ret += $" {Name} : {Type.ToString().Substring(1)}";
             }
+
+            if (Simple) ret = ret.Substring(1); // opravit
+
             return ret;
         }
 
+        public bool Simple = false; // opravit
 
         public ClassVariable(string name, VariablesTypes variable, AccessModifiers access) : base(name, variable, access)
         {

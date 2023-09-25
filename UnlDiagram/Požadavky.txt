@@ -1,12 +1,13 @@
-- Private
-# protected
-+ Public
+Co chci pøidat
+- zvìtšování / zmenšování koleèkem myši
+- Propojení èárou
+    - Relace
+- Zmìna barvy Class
+- Nastavení
+    - Font
+    - Základní barva
+    - Dark mode
 
+- Automatické ukládání
 
-Pøidávat pøedáváním
-
-Edit
-
-
-Pøesouvání
-Zvìtšování
+- Více stánek jako excel
