@@ -1,13 +1,9 @@
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using UnlDiagram.FIleService;
 using UnlDiagram.Models;
 using UnlDiagram.Models.Elements;
 using UnlDiagram.Models.Enums;
-using UnlDiagram.Views;
-using Timer = System.Threading.Timer;
 
-namespace UnlDiagram
+namespace UnlDiagram.Views
 {
     public partial class MainForm : Form
     {
@@ -59,12 +55,12 @@ namespace UnlDiagram
             if (e.Button == MouseButtons.Right)
             {
                 selectedItem.GetActions(ref MenuStrip, this);
+                return;
             }
 
             #region ClickOnElement
 
             selectedItem.PossibleState = selectedItem.GetCloseState(e.X, e.Y);
-            //Debug.WriteLine(selectedItem.PossibleState);
 
             _sElement = selectedItem;
             _sElement.LastHeight = selectedItem.Height;
@@ -72,7 +68,6 @@ namespace UnlDiagram
             _sElement.LastLocation = new PointF(_sElement.Location.X, _sElement.Location.Y);
             _xoffSet = e.X - _sElement.Location.X;
             _yoffSet = e.Y - _sElement.Location.Y;
-            MoveTimer.Start();
 
             #endregion
         }
@@ -80,18 +75,15 @@ namespace UnlDiagram
         private void MainView_MouseUp(object sender, MouseEventArgs e)
         {
             _sElement = null;
-            MoveTimer.Stop();
         }
 
         private void MoveTimer_Tick(object sender, EventArgs e)
         {
             if (_sElement != null)
             {
-                MainView.Refresh();
+                //MainView.Refresh();
             }
         }
-
-
 
 
         private void MainView_MouseMove(object sender, MouseEventArgs e)
@@ -159,6 +151,8 @@ namespace UnlDiagram
                     _sElement.Height = e.Y - (int)_sElement.Location.Y;
                     break;
             }
+
+            MainView.Refresh();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)

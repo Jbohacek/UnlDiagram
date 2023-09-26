@@ -36,7 +36,6 @@ namespace UnlDiagram.FIleService
                     writer.Close();
             }
             return new Result<bool>(true);
-
         }
 
         public static T ReadFromXmlFile<T>(string path) where T : new()
@@ -55,8 +54,6 @@ namespace UnlDiagram.FIleService
                 {
                     return new T();
                 }
-
-
             }
             finally
             {

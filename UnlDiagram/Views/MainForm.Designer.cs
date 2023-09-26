@@ -1,4 +1,4 @@
-﻿namespace UnlDiagram
+﻿namespace UnlDiagram.Views
 {
     partial class MainForm
     {
@@ -33,7 +33,6 @@
             MenuStrip = new ContextMenuStrip(components);
             přidatToolStripMenuItem = new ToolStripMenuItem();
             editovatToolStripMenuItem = new ToolStripMenuItem();
-            MoveTimer = new System.Windows.Forms.Timer(components);
             SaveMenu = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             saveToolStripMenuItem = new ToolStripMenuItem();
@@ -77,12 +76,6 @@
             editovatToolStripMenuItem.Name = "editovatToolStripMenuItem";
             editovatToolStripMenuItem.Size = new Size(92, 22);
             editovatToolStripMenuItem.Text = "Editovat";
-            // 
-            // MoveTimer
-            // 
-            MoveTimer.Enabled = true;
-            MoveTimer.Interval = 1;
-            MoveTimer.Tick += MoveTimer_Tick;
             // 
             // SaveMenu
             // 
@@ -135,7 +128,6 @@
         #endregion
 
         private PictureBox MainView;
-        private System.Windows.Forms.Timer MoveTimer;
         private ContextMenuStrip MenuStrip;
         private ToolStripMenuItem přidatToolStripMenuItem;
         private ToolStripMenuItem editovatToolStripMenuItem;

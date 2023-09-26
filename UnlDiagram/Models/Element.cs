@@ -53,7 +53,6 @@ namespace UnlDiagram.Models
         {
             
         }
-
         public Element(PointF location, int width, int height, int displayOrder = 0)
         {
             Id = Guid.NewGuid();
@@ -74,7 +73,6 @@ namespace UnlDiagram.Models
             
         }
 
-
         public bool IsIn(PointF cursorLocation, int offset = 0)
         {
             return LeftTop.X - offset < cursorLocation.X &&
@@ -83,7 +81,6 @@ namespace UnlDiagram.Models
                    LeftBottom.Y + offset > cursorLocation.Y;
         }
 
-        
         public Cursor GetCloseCursor(int x, int y, int distance = 15)
         {
             if (!Helper.ArePointsUnique(LeftTop, LeftBottom, RightBottom, RightTop))
