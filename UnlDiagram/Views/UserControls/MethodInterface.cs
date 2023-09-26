@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UnlDiagram.Essentials;
 using UnlDiagram.Models;
 using UnlDiagram.Models.Enums;
 using UnlDiagram.Models.Parameters;
@@ -23,8 +24,8 @@ namespace UnlDiagram.Views.UserControls
         {
             _obj = obj;
             InitializeComponent();
-            Element.FillAccessTypes(ref ComboAccess);
-            Element.FillVariableTypes(ref ComboVariable);
+            Helper.FillAccessTypes(ref ComboAccess);
+            Helper.FillVariableTypes(ref ComboVariable);
 
             VariablesTypes classVarType = obj.Type;// opravit
             string custom = obj.Custom; // opravit

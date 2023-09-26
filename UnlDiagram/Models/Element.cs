@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Xml.Serialization;
+using UnlDiagram.Essentials;
 using UnlDiagram.Models.Enums;
 
 namespace UnlDiagram.Models
@@ -85,7 +86,7 @@ namespace UnlDiagram.Models
         
         public Cursor GetCloseCursor(int x, int y, int distance = 15)
         {
-            if (!ArePointsUnique(LeftTop, LeftBottom, RightBottom, RightTop))
+            if (!Helper.ArePointsUnique(LeftTop, LeftBottom, RightBottom, RightTop))
             {
                 return Cursors.SizeAll;
             }
@@ -97,7 +98,7 @@ namespace UnlDiagram.Models
                 { RightTop, Cursors.SizeNESW }
             };
             foreach (var corner in 
-                     corners.Where(corner => GetDistance(corner.Key, new PointF(x, y)) < distance))
+                     corners.Where(corner => Helper.GetDistance(corner.Key, new PointF(x, y)) < distance))
             {
                 return corner.Value;
             }
@@ -114,19 +115,12 @@ namespace UnlDiagram.Models
                 { RightTop, ElementsStates.ResizeRT }
             };
             foreach (var corner in
-                     corners.Where(corner => GetDistance(corner.Key, new PointF(x, y)) < distance))
+                     corners.Where(corner => Helper.GetDistance(corner.Key, new PointF(x, y)) < distance))
             {
                 return corner.Value;
             }
 
             return ElementsStates.Moving;
-        }
-
-        public static double GetDistance(PointF point1, PointF point2) // Help class
-        {
-            double xDiff = point2.X - point1.X;
-            double yDiff = point2.Y - point1.Y;
-            return Math.Sqrt(Math.Pow(xDiff, 2) + Math.Pow(yDiff, 2));
         }
 
         public override string ToString()
@@ -147,38 +141,5 @@ namespace UnlDiagram.Models
             stringBuilder.AppendLine($"RightBottom: {RightBottom}");
             return stringBuilder.ToString();
         }
-
-
-        public static void FillVariableTypes(ref ComboBox combo) // help class
-        {
-            combo.Items.Clear();
-            foreach (string name in Enum.GetNames(typeof(VariablesTypes)))
-            {
-                if (name != "Custom")
-                {
-                    combo.Items.Add(name.Substring(1));
-                }
-            }
-        }
-
-        public static void FillAccessTypes(ref ComboBox combo) // help class
-        {
-            combo.Items.Clear();
-            foreach (string name in Enum.GetNames(typeof(AccessModifiers)))
-            {
-                combo.Items.Add(name.Substring(1));
-            }
-        }
-        
-        private bool ArePointsUnique(PointF p1, PointF p2, PointF p3, PointF p4) // help class
-        {
-            if (p1 == p2 || p1 == p3 || p1 == p4 || p2 == p3 || p2 == p4 || p3 == p4)
-            {
-                return false;
-            }
-            return true;
-        }
     }
-
-
 }

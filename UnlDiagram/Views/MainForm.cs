@@ -34,7 +34,7 @@ namespace UnlDiagram
 
         private void MainView_MouseDown(object sender, MouseEventArgs e)
         {
-            var selected = ClassElements.Where(x => x.IsIn(new PointF(e.X, e.Y), 10) == true);
+            var selected = ClassElements.Where(x => x.IsIn(new PointF(e.X, e.Y), 10) == true && x.Visible == true);
             var selectedItem = selected?.MaxBy(x => x.DisplayOrder);
             if (selectedItem == null)
             {
@@ -72,6 +72,7 @@ namespace UnlDiagram
             _sElement.LastLocation = new PointF(_sElement.Location.X, _sElement.Location.Y);
             _xoffSet = e.X - _sElement.Location.X;
             _yoffSet = e.Y - _sElement.Location.Y;
+            MoveTimer.Start();
 
             #endregion
         }
@@ -79,6 +80,7 @@ namespace UnlDiagram
         private void MainView_MouseUp(object sender, MouseEventArgs e)
         {
             _sElement = null;
+            MoveTimer.Stop();
         }
 
         private void MoveTimer_Tick(object sender, EventArgs e)

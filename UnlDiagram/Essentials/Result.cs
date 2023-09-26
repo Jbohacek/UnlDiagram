@@ -25,6 +25,7 @@ namespace UnlDiagram.Essentials
         public Result(T value)
         {
             IsSuccessful = true;
+            Value = value;
         }
     }
 }
