@@ -25,6 +25,8 @@ namespace UnlDiagram.Models.Parameters
             return ret;
         }
 
+        
+
         public bool Simple = false; // opravit
 
         public ClassVariable(string name, VariablesTypes variable, AccessModifiers access) : base(name, variable, access)

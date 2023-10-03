@@ -28,51 +28,56 @@ namespace UnlDiagram.Models.Elements
             Name = "?";
         }
 
-        public void GetActions(ref ContextMenuStrip toolStrip, MainForm parent)
+        public void GetActions(ref ContextMenuStrip menu, bool moveUpAtt, bool moveDownAtt)
         {
-            var items = toolStrip.Items;
+            var items = menu.Items;
             items.Clear();
 
             //edit
             var edit = new ToolStripButton("Edit");
-            edit.Click += (s, e) =>
-            {
-                //Debug.WriteLine(this);
-                var editForm = new EditForm(this);
-                editForm.ShowDialog();
-            };
+            edit.Click += EditSelf;
             items.Add(edit);
 
             //Delete
             var delete = new ToolStripButton("Delete");
-            delete.Click += (s, e) =>
-            {
-                Visible = false;
-                IsDeleted = true;
-                parent.View.Refresh();
-            };
+            delete.Click += DeleteSelf;
             items.Add(delete);
 
             //MoveUp
             var moveUp = new ToolStripButton("Move UP");
-            if (parent.ClassElements.Max(x => x.DisplayOrder) == DisplayOrder) moveUp.Enabled = false;
-            moveUp.Click += (s, e) =>
-            {
-                this.DisplayOrder += 2;
-                parent.View.Refresh();
-            };
+            if (!moveUpAtt) moveUp.Enabled = false;
+            moveUp.Click += MoveUpSelf;
             items.Add(moveUp);
 
             //MoveDown
             var moveDown = new ToolStripButton("Move DOWN");
-            if (parent.ClassElements.Min(x => x.DisplayOrder) == DisplayOrder) moveDown.Enabled = false;
-            moveDown.Click += (s, e) =>
-            {
-                this.DisplayOrder -= 2;
-                parent.View.Refresh();
-            };
+            if (!moveDownAtt) moveDown.Enabled = false;
+            moveDown.Click += MoveDownSelf;
             items.Add(moveDown);
         }
+
+        public void EditSelf(object? sender, EventArgs e)
+        {
+            var editForm = new EditForm(this);
+            editForm.ShowDialog();
+        }
+
+        public void DeleteSelf(object? sender, EventArgs e)
+        {
+            Visible = false;
+            IsDeleted = true;
+        }
+
+        public void MoveUpSelf(object? sender, EventArgs e)
+        {
+            this.DisplayOrder += 2;
+        }
+
+        public void MoveDownSelf(object? sender, EventArgs e)
+        {
+            this.DisplayOrder -= 2;
+        }
+
 
         public void Draw(Graphics g)
         {

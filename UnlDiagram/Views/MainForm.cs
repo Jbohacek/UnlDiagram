@@ -2,6 +2,7 @@ using UnlDiagram.FIleService;
 using UnlDiagram.Models;
 using UnlDiagram.Models.Elements;
 using UnlDiagram.Models.Enums;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace UnlDiagram.Views
 {
@@ -54,7 +55,14 @@ namespace UnlDiagram.Views
             }
             if (e.Button == MouseButtons.Right)
             {
-                selectedItem.GetActions(ref MenuStrip, this);
+                var moveUp = this.ClassElements.Max(x => x.DisplayOrder) != selectedItem.DisplayOrder;
+                var moveDown = this.ClassElements.Min(x => x.DisplayOrder) != selectedItem.DisplayOrder;
+                selectedItem.GetActions(ref MenuStrip, moveUp, moveDown);
+
+                foreach (ToolStripItem menuStripItem in MenuStrip.Items)
+                {
+                    menuStripItem.Click += RefreshView;
+                }
                 return;
             }
 
@@ -77,12 +85,9 @@ namespace UnlDiagram.Views
             _sElement = null;
         }
 
-        private void MoveTimer_Tick(object sender, EventArgs e)
+        public void RefreshView(object? sender, EventArgs e)
         {
-            if (_sElement != null)
-            {
-                //MainView.Refresh();
-            }
+            MainView.Refresh();
         }
 
 

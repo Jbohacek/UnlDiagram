@@ -31,7 +31,7 @@
             TextNameBox = new TextBox();
             ComboAccess = new ComboBox();
             ComboVariable = new ComboBox();
-            flowLayoutPanel1 = new FlowLayoutPanel();
+            VariablePanel = new FlowLayoutPanel();
             button1 = new Button();
             button2 = new Button();
             label1 = new Label();
@@ -64,13 +64,13 @@
             ComboVariable.TabIndex = 2;
             ComboVariable.TextChanged += TextChangedObj;
             // 
-            // flowLayoutPanel1
+            // VariablePanel
             // 
-            flowLayoutPanel1.AutoScroll = true;
-            flowLayoutPanel1.Location = new Point(3, 99);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(288, 111);
-            flowLayoutPanel1.TabIndex = 3;
+            VariablePanel.AutoScroll = true;
+            VariablePanel.Location = new Point(3, 99);
+            VariablePanel.Name = "VariablePanel";
+            VariablePanel.Size = new Size(288, 111);
+            VariablePanel.TabIndex = 3;
             // 
             // button1
             // 
@@ -80,7 +80,7 @@
             button1.TabIndex = 4;
             button1.Text = "+ Add";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            button1.Click += BtnAddItem;
             // 
             // button2
             // 
@@ -90,7 +90,7 @@
             button2.TabIndex = 5;
             button2.Text = "Remove";
             button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            button2.Click += BtnDelete;
             // 
             // label1
             // 
@@ -109,7 +109,7 @@
             Controls.Add(label1);
             Controls.Add(button2);
             Controls.Add(button1);
-            Controls.Add(flowLayoutPanel1);
+            Controls.Add(VariablePanel);
             Controls.Add(ComboVariable);
             Controls.Add(ComboAccess);
             Controls.Add(TextNameBox);
@@ -124,7 +124,7 @@
         private TextBox TextNameBox;
         private ComboBox ComboAccess;
         private ComboBox ComboVariable;
-        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel VariablePanel;
         private Button button1;
         private Button button2;
         private Label label1;

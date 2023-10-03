@@ -16,9 +16,9 @@ namespace UnlDiagram.Views.UserControls
 {
     public partial class MethodInterface : UserControl
     {
-        //Vytvořit bool na load, jinak se to přehazuje !
 
         private readonly MethodVariable _obj;
+        private readonly bool _isActive = false;
 
         public MethodInterface(MethodVariable obj)
         {
@@ -27,32 +27,23 @@ namespace UnlDiagram.Views.UserControls
             Helper.FillAccessTypes(ref ComboAccess);
             Helper.FillVariableTypes(ref ComboVariable);
 
-            VariablesTypes classVarType = obj.Type;// opravit
-            string custom = obj.Custom; // opravit
-
             foreach (var classVariable in _obj.Parameters)
             {
-                var newInterface = new VariableInterface(classVariable);
-                flowLayoutPanel1.Controls.Add(newInterface); // opravit
+                var newInterface = new VariableInterface(classVariable,true);
+                VariablePanel.Controls.Add(newInterface); 
             }
 
 
             TextNameBox.Text = obj.Name;
+            ComboAccess.Text = _obj.GetAccess();
+            ComboVariable.Text = _obj.GetType();
 
-            ComboAccess.Text = obj.Access.ToString().Substring(1); // Metoda
-
-            if (classVarType == VariablesTypes.Custom)
-            {
-                ComboVariable.Text = custom;
-            }
-            else
-            {
-                ComboVariable.Text = classVarType.ToString().Substring(1); // Metoda
-            }
+            _isActive = true;
         }
 
         private void TextChangedObj(object sender, EventArgs e)
         {
+            if (!_isActive) return;
             _obj.Name = TextNameBox.Text;
             if (!string.IsNullOrWhiteSpace(ComboAccess.Text))
             {
@@ -70,17 +61,17 @@ namespace UnlDiagram.Views.UserControls
             }
         }
 
-        private void button2_Click(object sender, EventArgs e) // opravit
+        private void BtnDelete(object sender, EventArgs e)
         {
             _obj.IsDeleted = true;
             this.Dispose();
         }
 
-        private void button1_Click(object sender, EventArgs e) // opravit
+        private void BtnAddItem(object sender, EventArgs e)
         {
-            var newItem = new ClassVariable() { Simple = true }; // opravit
-            var newInterface = new VariableInterface(newItem, true); // opravit
-            flowLayoutPanel1.Controls.Add(newInterface); // opravit
+            var newItem = new ClassVariable() { Simple = true }; 
+            var newInterface = new VariableInterface(newItem, true);
+            VariablePanel.Controls.Add(newInterface);
             _obj.Parameters.Add(newItem);
         }
     }

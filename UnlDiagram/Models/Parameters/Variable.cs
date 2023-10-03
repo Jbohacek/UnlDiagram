@@ -91,5 +91,15 @@ namespace UnlDiagram.Models.Parameters
                     break;
             }
         }
+
+        public string GetAccess()
+        {
+            return this.Access.ToString().Substring(1);
+        }
+
+        public new string? GetType()
+        {
+            return this.Type == VariablesTypes.Custom ? Custom : this.Type.ToString().Substring(1);
+        }
     }
 }

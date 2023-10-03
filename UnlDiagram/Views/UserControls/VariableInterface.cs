@@ -16,66 +16,53 @@ namespace UnlDiagram.Views.UserControls
 {
     public partial class VariableInterface : UserControl
     {
-        //Vytvořit bool na load, jinak se to přehazuje !
-        // přesat i na možnou variable
-        private ClassVariable _classVar;
+        public readonly ClassVariable ClassVar;
+        public readonly bool IsActive = false;
+
 
         public VariableInterface(ClassVariable classVar, bool isVariable = false)
         {
-            _classVar = classVar;
+            ClassVar = classVar;
             InitializeComponent();
             Helper.FillAccessTypes(ref ComboAccess);
             Helper.FillVariableTypes(ref ComboType);
 
-            VariablesTypes classVarType = classVar.Type; // opravit
-            string custom = classVar.Custom; // opravit
-            AccessModifiers modifiers = classVar.Access;
+            TextNameVariable.Text = ClassVar.Name;
 
+            ComboAccess.Text = classVar.GetAccess();
+            ComboType.Text = classVar.GetType();
 
-
-            TextNameVariable.Text = _classVar.Name;
-
-            ComboAccess.Text = modifiers.ToString().Substring(1); // Metoda
-
-
-            if (classVarType == VariablesTypes.Custom)
-            {
-                ComboType.Text = custom;
-            }
-            else
-            {
-                ComboType.Text = classVarType.ToString().Substring(1);// opravit
-            }
-
-            if (isVariable == true) // opravit
+            if (isVariable)
             {
                 ComboAccess.Visible = false;
             }
 
+            IsActive = true;
         }
 
         private void TextChangedObj(object sender, EventArgs e)
         {
-            _classVar.Name = TextNameVariable.Text;
+            if(!IsActive) return;
+            ClassVar.Name = TextNameVariable.Text;
             if (!string.IsNullOrWhiteSpace(ComboAccess.Text))
             {
-                _classVar.Access = (AccessModifiers)Enum.Parse(typeof(AccessModifiers), "_" + ComboAccess.Text, true); // Metoda
+                ClassVar.Access = (AccessModifiers)Enum.Parse(typeof(AccessModifiers), "_" + ComboAccess.Text, true); // Metoda
             }
 
             if (Enum.TryParse<VariablesTypes>("_" + ComboType.Text, out VariablesTypes a))
             {
-                _classVar.Type = (VariablesTypes)Enum.Parse(typeof(VariablesTypes), "_" + ComboType.Text, true); // Metoda
+                ClassVar.Type = (VariablesTypes)Enum.Parse(typeof(VariablesTypes), "_" + ComboType.Text, true); // Metoda
             }
             else
             {
-                _classVar.Type = VariablesTypes.Custom;
-                _classVar.Custom = ComboType.Text;
+                ClassVar.Type = VariablesTypes.Custom;
+                ClassVar.Custom = ComboType.Text;
             }
         }
 
-        private void button1_Click(object sender, EventArgs e) // opravit
+        private void BtnDelete(object sender, EventArgs e)
         {
-            _classVar.IsDeleted = true;
+            ClassVar.IsDeleted = true;
             this.Dispose();
         }
     }

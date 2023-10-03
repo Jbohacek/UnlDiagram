@@ -54,7 +54,7 @@ namespace UnlDiagram.Views
             Ele.Methods.Add(method);
         }
 
-        private void button1_Click(object sender, EventArgs e) // opravit
+        private void SaveButton(object sender, EventArgs e)
         {
             this.Close();
         }
